@@ -19,7 +19,6 @@ void main(int argc, char* argv[]){
             while((num = read(file, buffer, BUFFER_SIZE)) > 0) write(1, buffer, num);
             close(file);
         }
-        fprintf(stdout, "\n");
     }
     exit(0);
 }
