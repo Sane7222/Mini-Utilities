@@ -37,7 +37,7 @@ void my_sed(char *input, char *find_term, char *replace_term) {
     } else {
         stream = fopen(input, "r");
         if (stream == NULL) {
-            printf("cannot open the file\n");
+            printf("my-sed: cannot open file\n");
             exit(1);
         }
     }
