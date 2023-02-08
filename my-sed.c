@@ -2,8 +2,8 @@
 #include<stdlib.h>
 #include<string.h>
 
-#define TRUE 1;
-#define FALSE 0;
+#define TRUE 1
+#define FALSE 0
 
 void my_sed(char *, char *, char*);
 
@@ -37,7 +37,7 @@ void my_sed(char *input, char *find_term, char *replace_term) {
     } else {
         stream = fopen(input, "r");
         if (stream == NULL) {
-            printf("cannot open the file\n");
+            printf("my-sed: cannot open file\n");
             exit(1);
         }
     }
@@ -50,7 +50,6 @@ void my_sed(char *input, char *find_term, char *replace_term) {
     char *line = NULL;           // the original line
     char *newline = NULL;        // the new line
     size_t len = 0;
-    size_t characters;
     ssize_t nread = 0;
     
     // begin reading lines
@@ -61,7 +60,8 @@ void my_sed(char *input, char *find_term, char *replace_term) {
 
         newline = malloc((len + replace_term_len + 1) * sizeof(char));
         if (newline == NULL) {
-            // yikes, better clean up...
+            // yikes, issue with malloc
+            // better clean up...
             free(line);
             fclose(stream);
             exit(1);
@@ -69,27 +69,27 @@ void my_sed(char *input, char *find_term, char *replace_term) {
 
         // begin checking chars in original line one by one
         for (original_i; original_i < nread; original_i++) {
-            if (found_flag == 0 && line[original_i] == find_term[0]) {
+            if (found_flag == FALSE && line[original_i] == find_term[0]) {
                 // possible find_term located...
                 int find_offset = 0;
                 int replace_offset = 0;
 
-                found_flag = 1;
+                found_flag = TRUE;
                 for (find_offset; find_offset < find_term_len; find_offset++) {
                     if (original_i + find_offset >= nread) {
                         // reached the end of the original string, stop
-                        found_flag = 0;
+                        found_flag = FALSE;
                         break;
                     }
                     
                     if (line[original_i + find_offset] != find_term[find_offset]) {
                         // not the actual find_term, stop
-                        found_flag = 0;
+                        found_flag = FALSE;
                         break;
                     }
                 }
 
-                if (found_flag == 1) {
+                if (found_flag == TRUE) {
                     // found! start adding the replaced chars to the new string
                     for (replace_offset = 0; replace_offset < replace_term_len; replace_offset++) {
                         newline[new_i + replace_offset] = replace_term[replace_offset];
@@ -101,11 +101,11 @@ void my_sed(char *input, char *find_term, char *replace_term) {
                 }
             }
             
-            // copy into new line
+            // copy char into new line
             newline[new_i++] = line[original_i];
         }
 
-        // print the output
+        // terminate the newline with null char and print the output
         newline[new_i++] = '\0';
         printf("%s", newline);
 
