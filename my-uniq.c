@@ -14,6 +14,7 @@ void main(int argc, char *argv[]){
             FILE *f = fopen(argv[i], "r"); // Open file
             if(f == NULL){ // Error opening
                 fprintf(stderr, "my-uniq: cannot open file\n");
+                free(l1);
                 exit(1);
             }
 
