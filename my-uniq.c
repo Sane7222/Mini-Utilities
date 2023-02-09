@@ -1,9 +1,12 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#define BUFFER_SIZE 2048
+#define BUFFER_SIZE 1024
 
 void main(int argc, char *argv[]){
+
+    size_t len = 0;
+    char *l1 = NULL;
 
     if(argc > 1){ // Files given
         for(int i = 1; i < argc; i++){
@@ -14,29 +17,34 @@ void main(int argc, char *argv[]){
                 exit(1);
             }
 
-            char *l1 = malloc(BUFFER_SIZE * sizeof(char)), *l2 = malloc(BUFFER_SIZE * sizeof(char));
+            char *l2 = malloc(BUFFER_SIZE * sizeof(char));
             l2[0] = '\0';
 
-            while(fgets(l1, BUFFER_SIZE, f) != NULL){ // While get lines from FILE
+            while(getline(&l1, &len, f) != -1){ // While get lines from FILE
                 if(strcmp(l1, l2) != 0) fprintf(stdout, "%s", l1); // If not the same print
                 free(l2);
                 l2 = strdup(l1);
+                free(l1);
+                l1 = NULL;
             }
             fclose(f); // Close file
-            free(l1); free(l2); // Free memory
+            free(l2); // Free memory
         }
+        free(l1); 
         exit(0);
     }
 
-    // No files given
-    char *l1 = malloc(BUFFER_SIZE * sizeof(char)), *l2 = malloc(BUFFER_SIZE * sizeof(char));
+    char *l2 = malloc(BUFFER_SIZE * sizeof(char));
     l2[0] = '\0';
 
-    while(fgets(l1, BUFFER_SIZE, stdin) != NULL){ // While get lines from STDIN
+    // No files given
+    while(getline(&l1, &len, stdin) != -1){ // While get lines from STDIN
         if(strcmp(l1, l2) != 0) fprintf(stdout, "%s", l1); // If not the same print
         free(l2);
         l2 = strdup(l1);
+        free(l1);
+        l1 = NULL;
     }
-    free(l1); free(l2); // Free memory
+    free(l2); // Free memory
     exit(0);
 }
